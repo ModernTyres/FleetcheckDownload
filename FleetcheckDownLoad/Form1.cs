@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,12 +28,20 @@ namespace FleetcheckDownLoad
             FTP ftp = new FTP(host, username, password);
             List<string> files = new List<string>();
             files = ftp.GetFiles("/FleetCheck_Upload");
-            dataGridView1.DataSource = files.Select(x => new { Value = x }).ToList();
-            
+            dataGridView1.DataSource = files.Select(x => new { Value = x }).ToList();           
 
         }
 
-       
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                string value1 = row.Cells[0].Value.ToString();
+                string[] lines = File.ReadAllLines(value1);
+              
+            }
+        }
     }
 
     public class FTP
@@ -85,7 +94,7 @@ namespace FleetcheckDownLoad
                 {
                     var lineArr = line.Split('/');
                     line = lineArr[lineArr.Count() - 1];
-                    files.Add(line);
+                    files.Add(line);                     
                     line = sr.ReadLine();
                 }
 
@@ -99,6 +108,11 @@ namespace FleetcheckDownLoad
             }
         }
 
+        public goFleetcheck GetFileContent(string filePath)
+        {
+            var model = new goFleetcheck();
+            return model;
+        }
+
     }
 }
-//https://www.youtube.com/watch?v=iwvJ26DTK3w
